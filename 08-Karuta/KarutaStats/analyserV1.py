@@ -1,6 +1,6 @@
 import csv
 
-fileToAnalyse = 'Theimx.csv'
+fileToAnalyse = 'Nini.csv'
 
 frames = []
 wl = 0
@@ -164,13 +164,13 @@ print(" ")
 print(fileToAnalyse)
 print(" ")
 print("----- Statistiques --------------------------------------------------------------")
-print(burnValue," Gold (Total Gold )")
+print(burnValue," Gold (Total Gold, Total Burn Value of the Collection )")
 print(wl," Whishlist (Total Whishlist )")
 print(" ")
 print("----- Tickets -------------------------------------------------------------------")
 print(total_value, " Tickets ( Values of the Frames applied in the collection )")
 print(burnValue // 2500, "Tickets (In gold, Total burn value in tickets)")
-print(round((value/100000000000)), " Value of every card of the collection (Based on Print,Edition and Whishlist)")
+print(round((value/100000000000)), "Tickets : Value of every card of the collection (Based on Print,Edition and Whishlist)")
 print(" ")
 print((total_value+ round((value/100000000000))),"  Tickets (Card + Frame Value)")
 print(" ")
@@ -181,3 +181,4 @@ for i, (name, series, code, val) in enumerate(top_cards_sorted, 1):
     print(f"- {name}, {series}, {code}, {round(val/100000000000)} Tickets")
 print(" ")
 print("---------------------------------------------------------------------------------")
+
