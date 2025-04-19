@@ -8,6 +8,7 @@ total_value = 0
 burnValue = 0
 value = 0
 top_cards = []
+sp = []
 
 def determine_print_type(print_number):
     if 1 <= print_number <= 10:
@@ -150,7 +151,8 @@ with open(fileToAnalyse, 'r', newline='', encoding='utf-8') as fichier:
         card_series = ligne[3]  
         card_code = ligne[4]  
         top_cards.append((card_name, card_series, card_code, ticket_value))
-
+        if int(ligne[1]) <= 10:
+            sp.append("Code : " + str(ligne[0]) + " Print : "+ str(ligne[1])+" Edition : "+str(ligne[2])+" : "+str(ligne[3])+ " " +str(ligne[4]))
 
 for frame in frames:
     if frame in frame_values:  
@@ -183,3 +185,7 @@ print(" ")
 print("---------------------------------------------------------------------------------")
 print("All the frames'values are not in the software yet so your collection can be worth more than the price tell here.")
 print("Frames : ",frames)
+print(" ")
+print("Special Print : ")
+for i in sp :
+    print(i)
