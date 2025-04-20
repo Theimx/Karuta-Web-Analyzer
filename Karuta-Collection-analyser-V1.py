@@ -9,6 +9,7 @@ burnValue = 0
 value = 0
 top_cards = []
 sp = []
+test = 0
 
 def determine_print_type(print_number):
     if 1 <= print_number <= 10:
@@ -154,12 +155,22 @@ with open(fileToAnalyse, 'r', newline='', encoding='utf-8') as fichier:
         if int(ligne[1]) <= 10:
             sp.append("Code : " + str(ligne[0]) + " Print : "+ str(ligne[1])+" Edition : "+str(ligne[2])+" : "+str(ligne[3])+ " " +str(ligne[4]))
 
+        #Pour afficher toutes les cartes aillant une valeur supérieur a 1 ticket
+        # if ticket_value >= (100000000000) and ligne[14] == "":
+        #     print(ligne[3],ligne[4] ,ligne[0], round((ticket_value/100000000000),3), " Tickets" )
+
+        #Pour afficher toutes les cartes aillant une valeur inferieurs a 0.3 tickets, affiche la somme
+        # if ticket_value <= (100000000000/10) and ligne[14] == "":
+        #     print(ligne[3] ,ligne[4] ,ligne[0], round((ticket_value/100000000000),3), " Tickets" )
+        #     test += ticket_value
+
 for frame in frames:
     if frame in frame_values:  
         total_value += frame_values[frame]
 
 top_cards_sorted = sorted(top_cards, key=lambda x: x[3], reverse=True)[:20]
 
+print(test/100000000000)
 print(" ")
 print("---------------------------------------------------------------------------------")
 print(" ")
