@@ -1,19 +1,29 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background:linear-gradient(#651939,#bf99bf ) ;
+    background-repeat: no-repeat;
     margin: 0;
     padding: 20px;
 }
 
 header {
-    background: #333;
-    color: white;
+    
+    color: ivory;
     padding: 10px;
     text-align: center;
 }
-
+h1{
+    font-size: 3em;
+    text-align: center;
+    
+    }
+h2{
+    font-size: 1em;
+    text-align: left;
+        
+}
 button {
-    background: wheat;
+    background: #8e2f52;
     color: white;
     border-radius: 30px;
     padding: 70px 250px;
@@ -22,7 +32,7 @@ button {
 }
 
 button:hover {
-    background: darksalmon;
+    background: #dc476c;
 }
 
 .controle {
@@ -57,7 +67,7 @@ input[type="range"] {
 .bloc-droite button {
     flex: 1;
     border: none;
-    background: wheat;
+    background: #8e2f52;
     color: white;
     border-radius: 10px;
     cursor: pointer;
@@ -70,7 +80,7 @@ input[type="range"] {
 }
 
 .bloc-droite button:hover {
-    background: darksalmon;
+    background: #dc476c;
 }
 
 .description-curseur {

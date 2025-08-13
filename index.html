@@ -3,16 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon site</title>
+    <title>Theimx | Karuta-Collection-Analyser-Web</title>
     <link rel="stylesheet" href="style.css"> <!-- Lien vers CSS -->
+
+    <meta property="og:title" content="Theimx | Karuta-Collection-Analyser-Web" />
+    <meta property="og:description" content="Karuta-Collection-Analyser" />
+    <meta property="og:image" content="https://theimx.github.io/Theimx-Homepage/profil.png" />
+    <meta property="og:url" content="https://theimx.github.io/Theimx-Homepage/" />
+    <meta property="og:type" content="website" />
 </head>
 <body>
     <header>
-        <h1>Karuta Web Analyser</h1>
+        <h1>Theimx | Karuta-Collection-Analyser-Web</h1>
     </header>
 
     <main>
-        <p>Uploadez votre collection pour récupérer les stats</p>      
+        <img src="assets/0e54d87446f106d1fd58385295ae9deb.png" alt="Profil discord du bot" width="200" height="200"/>
+        <h2>Uploade your collection file to start the analyse :</h2>      
         <div class="controle">
             <!-- Colonne gauche : Bouton 1 -->
             
@@ -24,7 +31,7 @@
                  <!-- Optionnel : tu peux le retirer -->
                 <div class="curseur-blanc">
                     <p class="description-curseur">Most valuable card :</p>
-                    <input type="range" id="monCurseur" min="0" max="100" value="50">
+                    <input type="range" id="monCurseur" min="1" max="100" value="50">
                     <span id="valeurAffichee">50</span>
                 </div>
                 <button id="secondBouton">Start Analyse</button>
