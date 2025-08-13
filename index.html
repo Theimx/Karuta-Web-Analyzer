@@ -14,18 +14,23 @@
     <main>
         <p>Uploadez votre collection pour récupérer les stats</p>      
         <div class="controle">
-            <!-- Colonne gauche : rectangle arrondi pour curseur -->
-            <div class="bloc-gauche">
-                <input type="range" id="monCurseur" min="0" max="100" value="50">
-                <span id="valeurAffichee">50</span>
-            </div>
+            <!-- Colonne gauche : Bouton 1 -->
+            
+            <button id="monBouton">Action</button>
+            
         
-            <!-- Colonne droite : deux boutons superposés -->
+            <!-- Colonne droite : Bouton 2 remplacé par curseur -->
             <div class="bloc-droite">
-                <button id="monBouton">Action</button>
-                <button id="secondBouton">Autre action</button>
+                <button id="secondBouton">Autre action</button> <!-- Optionnel : tu peux le retirer -->
+                <div class="curseur-blanc">
+                    <p class="description-curseur">Réglez la valeur :</p>
+                    <input type="range" id="monCurseur" min="0" max="100" value="50">
+                    <span id="valeurAffichee">50</span>
+                </div>
             </div>
         </div>
+        
+        
         
         <p id="message">Ceci est un texte.</p>
         
