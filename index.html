@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karuta Collection Analyzer</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- PapaParse -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js" defer></script>
+
+    <!-- JS -->
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>Karuta Collection Analyzer</h1>
+    </header>
+
+    <div class="drop-box" id="drop-box">
+        📂 Put your CSV File here
+    </div>
+
+    <!-- OVERVIEW -->
+    <div class="grid">
+        <div class="card">
+            <h3>Gold total</h3>
+            <div class="kpi" id="gold">—</div>
+        </div>
+        <div class="card">
+            <h3>Wishlist totale</h3>
+            <div class="kpi" id="wl">—</div>
+        </div>
+        <div class="card">
+            <h3>Total Tickets</h3>
+            <div class="kpi" id="totalTickets">—</div>
+        </div>
+    </div>
+
+    <!-- TICKETS DETAILS -->
+    <div class="grid">
+        <div class="card">
+            <h3>Frames Tickets</h3>
+            <div class="kpi" id="frameTickets">—</div>
+        </div>
+        <div class="card">
+            <h3>Gold → Tickets</h3>
+            <div class="kpi" id="goldTickets">—</div>
+        </div>
+        <div class="card">
+            <h3>Cards Tickets</h3>
+            <div class="kpi" id="cardTickets">—</div>
+        </div>
+    </div>
+
+    <!-- TOP 20 -->
+    <div class="card">
+        <h2>Top 20 Most Valuable Cards</h2>
+        <ol class="list" id="topCards"></ol>
+    </div>
+
+    <!-- FRAMES -->
+    <div class="card">
+        <h2>Frames</h2>
+        <div class="badges" id="frames"></div>
+    </div>
+
+    <!-- SPECIAL PRINTS -->
+    <div class="card">
+        <h2>Special Prints</h2>
+        <ul class="list" id="specialPrints"></ul>
+    </div>
+
+    <footer>
+        All the frames' values are not in the software yet – your collection may be worth more.
+    </footer>
+
+</div>
+
+</body>
+</html>

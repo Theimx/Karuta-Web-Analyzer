@@ -1,0 +1,121 @@
+:root {
+    --bg: #f5f7fa;
+    --card: #ffffff;
+    --accent: #3f51b5;
+    --accent-soft: #e8eaf6;
+    --text: #2c2c2c;
+    --muted: #6b7280;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Inter, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* HEADER */
+header {
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 32px;
+}
+
+/* DROP ZONE */
+.drop-box {
+    background: var(--card);
+    border: 2px dashed #b0b7c3;
+    border-radius: 14px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.drop-box.dragover {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+}
+
+/* GRID */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+}
+
+/* CARD */
+.card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+.card h3 {
+    font-size: 16px;
+    color: var(--muted);
+    margin-bottom: 20px;
+}
+
+/* KPI */
+.kpi {
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--accent);
+}
+
+/* LISTS */
+.list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.list li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+}
+
+.list li:last-child {
+    border-bottom: none;
+}
+
+/* BADGES */
+.badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.badge {
+    background: var(--accent-soft);
+    color: var(--accent);
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+}
+
+/* FOOTER */
+footer {
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted);
+}
