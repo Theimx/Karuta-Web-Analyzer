@@ -5,6 +5,7 @@
 ---
 ### *Description* :   
 A website to get statistics on your Karuta card collection from the Discord bot Karuta.   
+https://theimx.github.io/Karuta-Web-Analyzer/   
    
 ---
 ### *How to use* :   
