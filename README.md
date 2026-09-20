@@ -1,5 +1,5 @@
 **Language : HTML; CSS; Javascript**  
-**Software Version : 1.0**  
+**Software Version : 2.0**  
 **AI : AI used**   
 
 ---
