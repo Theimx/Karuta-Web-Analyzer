@@ -92,11 +92,13 @@ const MOTIF_CHARS = ["カ", "ル", "タ", "集", "愛", "神", "龍", "風", "�
 
 // ================= STATE =================
 
-let cards = []; // parsed cards
+let cards = [];
 
 const filters = {
     search: "",
     minValue: 0,
+    maxPrint: 2020,
+    sort: "value",
     tag: "any",
     framed: "any",
     morphed: "any",
@@ -113,6 +115,11 @@ const fileNameEl   = document.getElementById("fileName");
 const searchInput  = document.getElementById("searchInput");
 const valueRange   = document.getElementById("valueRange");
 const valueLabel   = document.getElementById("valueLabel");
+const printRange   = document.getElementById("printRange");
+const printLabel   = document.getElementById("printLabel");
+const sortBtn      = document.getElementById("sortBtn");
+const sortMenu     = document.getElementById("sortMenu");
+const sortLabel    = document.getElementById("sortLabel");
 const rowsEl       = document.getElementById("rows");
 const emptyEl      = document.getElementById("empty");
 const tableEl      = document.getElementById("table");
@@ -137,10 +144,18 @@ const toast          = document.getElementById("toast");
 // ================= CSV LOADING =================
 
 dropBox.addEventListener("click", () => fileInput.click());
+
 dropBox.addEventListener("keydown", e => {
-    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileInput.click(); }
+    if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        fileInput.click();
+    }
 });
-browseBtn.addEventListener("click", e => { e.stopPropagation(); fileInput.click(); });
+
+browseBtn.addEventListener("click", e => {
+    e.stopPropagation();
+    fileInput.click();
+});
 
 fileInput.addEventListener("change", () => {
     if (fileInput.files.length) loadFile(fileInput.files[0]);
@@ -150,15 +165,23 @@ dropBox.addEventListener("dragover", e => {
     e.preventDefault();
     dropBox.classList.add("dragover");
 });
-dropBox.addEventListener("dragleave", () => dropBox.classList.remove("dragover"));
+
+dropBox.addEventListener("dragleave", () => {
+    dropBox.classList.remove("dragover");
+});
+
 dropBox.addEventListener("drop", e => {
     e.preventDefault();
     dropBox.classList.remove("dragover");
-    if (e.dataTransfer.files.length) loadFile(e.dataTransfer.files[0]);
+
+    if (e.dataTransfer.files.length) {
+        loadFile(e.dataTransfer.files[0]);
+    }
 });
 
 function loadFile(file) {
     fileNameEl.textContent = file.name;
+
     Papa.parse(file, {
         skipEmptyLines: true,
         complete: res => analyse(res.data)
@@ -171,7 +194,7 @@ function analyse(data) {
         const edition = +r[2];
         const wishlist = +r[16] || 0;
         const type = determinePrintType(print);
-        const value = estimateTicket(edition, type, wishlist) * 1e11; // raw ticket value
+        const value = estimateTicket(edition, type, wishlist) * 1e11;
 
         return {
             code: r[0],
@@ -195,6 +218,7 @@ function analyse(data) {
     contentSub.textContent = `${cards.length} cards loaded — click a row to view and copy its code.`;
     statsEl.hidden = false;
     tableEl.hidden = false;
+
     render();
 }
 
@@ -206,26 +230,52 @@ function yesNoMatch(value, mode) {
     return value === false || value === "";
 }
 
+const sortRules = {
+    value: (a, b) => b.value - a.value,
+    print: (a, b) => a.print - b.print,
+    wishlist: (a, b) => b.wishlist - a.wishlist
+};
+
 function applyFilters() {
     const q = filters.search.trim().toLowerCase();
+
     return cards.filter(c => {
         if (!filters.editions.has(c.edition)) return false;
-        if (Math.round(c.value / 1e11) < filters.minValue) return false;
+
+        if (Math.round(c.value / 1e11) < filters.minValue) {
+            return false;
+        }
+
+        // 2020 = 2000+ = aucune limite supérieure de print
+        if (filters.maxPrint < 2020 && c.print > filters.maxPrint) {
+            return false;
+        }
+
         if (!yesNoMatch(c.tag, filters.tag)) return false;
         if (!yesNoMatch(c.frame, filters.framed)) return false;
         if (!yesNoMatch(c.morphed, filters.morphed)) return false;
         if (!yesNoMatch(c.trimmed, filters.trimmed)) return false;
-        if (q && ![c.code, c.character, c.series].some(x => (x || "").toLowerCase().includes(q))) return false;
+
+        if (
+            q &&
+            ![c.code, c.character, c.series]
+                .some(x => (x || "").toLowerCase().includes(q))
+        ) {
+            return false;
+        }
+
         return true;
-    }).sort((a, b) => b.value - a.value);
+    }).sort(sortRules[filters.sort] || sortRules.value);
 }
 
 function flagHtml(c) {
     const flags = [];
+
     if (c.tag) flags.push('<span class="flag tag">TAG</span>');
     if (c.frame) flags.push('<span class="flag">FRAME</span>');
     if (c.morphed) flags.push('<span class="flag">MORPHED</span>');
     if (c.trimmed) flags.push('<span class="flag">TRIMMED</span>');
+
     return flags.join("");
 }
 
@@ -234,13 +284,19 @@ function render() {
 
     const list = applyFilters();
 
-    // Stats on the *filtered* selection
     document.getElementById("stCards").textContent = list.length;
-    document.getElementById("stGold").textContent = list.reduce((s, c) => s + c.burn, 0).toLocaleString("en-US");
-    document.getElementById("stWl").textContent = list.reduce((s, c) => s + c.wishlist, 0).toLocaleString("en-US");
-    document.getElementById("stTickets").textContent = Math.round(list.reduce((s, c) => s + c.value, 0) / 1e11).toLocaleString("en-US");
 
-    // Rows
+    document.getElementById("stGold").textContent =
+        list.reduce((s, c) => s + c.burn, 0).toLocaleString("en-US");
+
+    document.getElementById("stWl").textContent =
+        list.reduce((s, c) => s + c.wishlist, 0).toLocaleString("en-US");
+
+    document.getElementById("stTickets").textContent =
+        Math.round(
+            list.reduce((s, c) => s + c.value, 0) / 1e11
+        ).toLocaleString("en-US");
+
     rowsEl.innerHTML = list.map((c, i) => `
         <div class="row" data-index="${i}">
             <span class="code">${escapeHtml(c.code)}</span>
@@ -248,8 +304,14 @@ function render() {
             <span class="series">${escapeHtml(c.series)}</span>
             <span>Ed. ${c.edition}</span>
             <span>#${c.print.toLocaleString("en-US")}</span>
-            <span><span class="type-badge type-${c.type}">${c.type}</span></span>
-            <span class="num value">${Math.round(c.value / 1e11)} TCX</span>
+            <span>
+                <span class="type-badge type-${c.type}">
+                    ${c.type}
+                </span>
+            </span>
+            <span class="num value">
+                ${Math.round(c.value / 1e11)} TCX
+            </span>
             <span class="flags">${flagHtml(c)}</span>
         </div>
     `).join("");
@@ -259,61 +321,166 @@ function render() {
 
 function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, m => ({
-        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
     }[m]));
 }
 
-// Row click → overlay
+// ================= ROW CLICK → OVERLAY =================
+
 rowsEl.addEventListener("click", e => {
     const row = e.target.closest(".row");
+
     if (!row) return;
-    const list = applyFilters(); // same ordering as render
+
+    const list = applyFilters();
+
     openOverlay(list[+row.dataset.index]);
 });
 
 // ================= FILTER UI EVENTS =================
 
-searchInput.addEventListener("input", () => { filters.search = searchInput.value; render(); });
+searchInput.addEventListener("input", () => {
+    filters.search = searchInput.value;
+    render();
+});
 
 valueRange.addEventListener("input", () => {
     filters.minValue = +valueRange.value;
-    valueLabel.textContent = filters.minValue >= 500 ? "500+ TCX" : `${filters.minValue}+ TCX`;
+
+    valueLabel.textContent =
+        filters.minValue >= 150
+            ? "150+ TCX"
+            : `${filters.minValue}+ TCX`;
+
     render();
+});
+
+printRange.addEventListener("input", () => {
+    filters.maxPrint = +printRange.value;
+
+    printLabel.textContent =
+        filters.maxPrint >= 2020
+            ? "2000+"
+            : `${filters.maxPrint}`;
+
+    render();
+});
+
+// ================= SORT MENU =================
+
+sortBtn.addEventListener("click", e => {
+    e.stopPropagation();
+
+    sortMenu.hidden = !sortMenu.hidden;
+    sortBtn.classList.toggle("open", !sortMenu.hidden);
+});
+
+sortMenu.addEventListener("click", e => {
+    const opt = e.target.closest(".sort-opt");
+
+    if (!opt) return;
+
+    filters.sort = opt.dataset.sort;
+    sortLabel.textContent = opt.textContent;
+
+    sortMenu
+        .querySelectorAll(".sort-opt")
+        .forEach(o => o.classList.toggle("active", o === opt));
+
+    sortMenu.hidden = true;
+    sortBtn.classList.remove("open");
+
+    render();
+});
+
+document.addEventListener("click", e => {
+    if (!sortMenu.hidden && !e.target.closest(".sort-wrap")) {
+        sortMenu.hidden = true;
+        sortBtn.classList.remove("open");
+    }
+});
+
+document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && !sortMenu.hidden) {
+        sortMenu.hidden = true;
+        sortBtn.classList.remove("open");
+    }
 });
 
 document.querySelectorAll(".segmented").forEach(group => {
     group.addEventListener("click", e => {
         const btn = e.target.closest(".seg");
+
         if (!btn) return;
-        group.querySelectorAll(".seg").forEach(b => b.classList.remove("active"));
+
+        group
+            .querySelectorAll(".seg")
+            .forEach(b => b.classList.remove("active"));
+
         btn.classList.add("active");
+
         filters[group.dataset.filter] = btn.dataset.value;
+
         render();
     });
 });
 
 document.getElementById("editionChips").addEventListener("click", e => {
     const chip = e.target.closest(".chip");
+
     if (!chip) return;
+
     chip.classList.toggle("active");
+
     const ed = +chip.dataset.value;
-    if (chip.classList.contains("active")) filters.editions.add(ed);
-    else filters.editions.delete(ed);
+
+    if (chip.classList.contains("active")) {
+        filters.editions.add(ed);
+    } else {
+        filters.editions.delete(ed);
+    }
+
     render();
 });
+
+// ================= RESET =================
 
 resetBtn.addEventListener("click", () => {
     filters.search = "";
     filters.minValue = 0;
-    filters.tag = filters.framed = filters.morphed = filters.trimmed = "any";
+
+    // 2020 = 2000+ = toutes les cartes
+    filters.maxPrint = 2020;
+
+    filters.tag =
+        filters.framed =
+        filters.morphed =
+        filters.trimmed = "any";
+
     filters.editions = new Set([1, 2, 3, 4, 5, 6, 7]);
 
     searchInput.value = "";
+
     valueRange.value = 0;
-    valueLabel.textContent = "0+ tickets";
+    valueLabel.textContent = "0+ TCX";
+
+    printRange.value = 2020;
+    printLabel.textContent = "2000+";
+
     document.querySelectorAll(".segmented").forEach(g =>
-        g.querySelectorAll(".seg").forEach(b => b.classList.toggle("active", b.dataset.value === "any")));
-    document.querySelectorAll("#editionChips .chip").forEach(c => c.classList.add("active"));
+        g.querySelectorAll(".seg").forEach(b =>
+            b.classList.toggle("active", b.dataset.value === "any")
+        )
+    );
+
+    document
+        .querySelectorAll("#editionChips .chip")
+        .forEach(c => c.classList.add("active"));
+
     render();
 });
 
@@ -323,25 +490,30 @@ let currentCard = null;
 
 function openOverlay(card) {
     if (!card) return;
+
     currentCard = card;
 
     ovSeries.textContent = card.series;
     ovName.textContent = card.character;
     ovCode.textContent = card.code;
+
     ovMeta.textContent =
         `Edition ${card.edition} · Print #${card.print.toLocaleString("en-US")} · ${card.type}` +
         ` · ~${Math.round(card.value / 1e11)} TCX` +
         (card.frame ? ` · Frame: ${card.frame}` : "");
 
     const badges = [];
+
     if (card.tag) badges.push('<span class="flag tag">TAG</span>');
     if (card.frame) badges.push('<span class="flag">FRAME</span>');
     if (card.morphed) badges.push('<span class="flag">MORPHED</span>');
     if (card.trimmed) badges.push('<span class="flag">TRIMMED</span>');
+
     ovBadges.innerHTML = badges.join("");
 
     codeBox.classList.remove("copied");
     copyHint.innerHTML = copyHintSvg() + " Click to copy";
+
     overlay.hidden = false;
     document.body.style.overflow = "hidden";
 }
@@ -354,7 +526,12 @@ function closeOverlay() {
 
 overlayClose.addEventListener("click", closeOverlay);
 overlayBackdrop.addEventListener("click", closeOverlay);
-document.addEventListener("keydown", e => { if (e.key === "Escape" && !overlay.hidden) closeOverlay(); });
+
+document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && !overlay.hidden) {
+        closeOverlay();
+    }
+});
 
 function copyHintSvg() {
     return '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>';
@@ -362,20 +539,31 @@ function copyHintSvg() {
 
 codeBox.addEventListener("click", async () => {
     if (!currentCard) return;
+
     try {
         await navigator.clipboard.writeText(currentCard.code);
     } catch {
-        // Fallback for non-secure contexts
         const ta = document.createElement("textarea");
+
         ta.value = currentCard.code;
+
         document.body.appendChild(ta);
         ta.select();
         document.execCommand("copy");
         ta.remove();
     }
+
     codeBox.classList.add("copied");
-    copyHint.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 7"/></svg> Copied!';
+
+    copyHint.innerHTML =
+        '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 7"/></svg> Copied!';
+
     toast.classList.add("show");
+
     clearTimeout(toast._t);
-    toast._t = setTimeout(() => toast.classList.remove("show"), 1800);
+
+    toast._t = setTimeout(
+        () => toast.classList.remove("show"),
+        1800
+    );
 });

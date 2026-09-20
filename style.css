@@ -300,7 +300,60 @@ input[type="range"]::-moz-range-thumb {
     overflow: hidden;
 }
 
-.content-head h2 { margin: 0; font-size: 26px; color: var(--head); transition: color 0.35s ease; }
+/* Titre encadré + tri */
+.content-head .head-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+.title-box {
+    margin: 0;
+    font-size: 21px;
+    color: var(--head);
+    background: var(--stat-bg);
+    border: 2px solid var(--head);
+    border-radius: 14px;
+    padding: 7px 18px;
+    box-shadow: var(--shadow);
+    transition: color 0.35s ease, background 0.35s ease, border-color 0.35s ease;
+}
+
+.sort-wrap { position: relative; }
+
+.sort-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--stat-bg);
+    color: var(--head);
+    border: 2px solid var(--head);
+    border-radius: 14px;
+    padding: 9px 16px;
+    font: inherit; font-size: 13px; font-weight: 700;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: transform 0.15s ease, background 0.35s ease, color 0.35s ease, border-color 0.35s ease;
+}
+.sort-btn:hover { transform: translateY(-1px); }
+.sort-btn .caret { display: inline-flex; transition: transform 0.18s ease; }
+.sort-btn.open .caret { transform: rotate(180deg); }
+
+.sort-menu {
+    position: absolute; top: calc(100% + 8px); left: 0; z-index: 30;
+    min-width: 150px;
+    display: flex; flex-direction: column; gap: 2px;
+    background: var(--surface);
+    border: 1px solid var(--row-border);
+    border-radius: 14px;
+    padding: 6px;
+    box-shadow: var(--shadow);
+}
+.sort-menu[hidden] { display: none; }
+
+.sort-opt {
+    background: none; border: none; border-radius: 9px;
+    padding: 9px 12px; text-align: left;
+    font: inherit; font-size: 13px; font-weight: 600;
+    color: var(--ink); cursor: pointer;
+    transition: background 0.15s ease, color 0.35s ease;
+}
+.sort-opt:hover { background: var(--row-hover); }
+.sort-opt.active { background: var(--lime); color: var(--lime-ink); }
 .content-head p { margin: 4px 0 0; font-size: 13.5px; color: var(--muted); }
 
 /* Stats strip */
